@@ -1,34 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const api_url = 'http://localhost:3000'
+
+  const [playlist, setPlaylist] = useState<any>(null)
+
+  const fetchPlaylist = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/callback'); // The route where your playlist data is sent
+      const data = await response.json();
+      setPlaylist(data);
+    } catch (error) {
+      console.error('Error fetching playlist data:', error);
+    }
+  };
+
+  const handleLogin = () => {
+    window.location.href = `${api_url}/login`
+    fetchPlaylist()
+  }
+
+  console.log(playlist)
 
   return (
-    <>
+    <div>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h1>Spotify Login</h1>
+        <button onClick={handleLogin}>Login to Spotify</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <h1>Spotify Playlist Info</h1>
+      {playlist ? (
+        <div>
+          <h2>{playlist.name}</h2>
+          <img src={playlist.cover_photo} alt={playlist.name} style={{ width: '300px' }} />
+          <a href={playlist.tracks} target="_blank" rel="noopener noreferrer">View Track List</a>
+        </div>
+      ) : (
+        <p>No playlist info available</p>
+      )}
+    </div>
   )
 }
 

@@ -1,0 +1,7 @@
+axios
+express
+cors
+querystring
+dotenv
+concurrently --save-dev
+node
